@@ -1,4 +1,5 @@
 import numpy as np
+import vtk
 from tvtk.api import tvtk, write_data
 
 
@@ -30,23 +31,39 @@ def save_vtk(path, coords=None, vectors={}, scalars={}, Mm_per_pix=720e-3):
         pts = pts.transpose(2, 1, 0, 3)
         pts = pts.reshape((-1, 3))
 
-    sg = tvtk.StructuredGrid()
-    sg.points = pts
-    sg.set_dimensions(dim[0], dim[1], dim[2])
-    i = 0
+    # Create VTK StructuredGrid directly to avoid TVTK compatibility issues
+    sg_native = vtk.vtkStructuredGrid()
+    
+    # Create and set points
+    points = vtk.vtkPoints()
+    for i in range(len(pts)):
+        points.InsertNextPoint(pts[i])
+    
+    sg_native.SetDimensions(dim[0], dim[1], dim[2])
+    sg_native.SetPoints(points)
+    
+    # Add vector data
     for v_name, v in vectors.items():
         v = v.transpose(2, 1, 0, 3)
         v = v.reshape((-1, 3))
-        sg.point_data.add_array(v)
-        sg.point_data.get_array(i).name = v_name
-        sg.point_data.update()
-        i += 1
+        arr = vtk.vtkFloatArray()
+        arr.SetNumberOfComponents(3)
+        arr.SetName(v_name)
+        for i in range(len(v)):
+            arr.InsertNextTuple(v[i])
+        sg_native.GetPointData().AddArray(arr)
+    
+    # Add scalar data
     for s_name, s in scalars.items():
         s = s.transpose(2, 1, 0)
         s = s.reshape((-1))
-        sg.point_data.add_array(s)
-        sg.point_data.get_array(i).name = s_name
-        sg.point_data.update()
-        i += 1
-
+        arr = vtk.vtkFloatArray()
+        arr.SetNumberOfComponents(1)
+        arr.SetName(s_name)
+        for i in range(len(s)):
+            arr.InsertNextValue(s[i])
+        sg_native.GetPointData().AddArray(arr)
+    
+    # Convert to TVTK for writing
+    sg = tvtk.to_tvtk(sg_native)
     write_data(sg, path)
