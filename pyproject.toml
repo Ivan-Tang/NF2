@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nf2"
+version = "0.3"
+description = "Nonlinear force-free field extrapolation package"
+authors = [{ name = "AIIAcourse" }]
+readme = "README.md"
+requires-python = ">=3.8"
