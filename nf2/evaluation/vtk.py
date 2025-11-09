@@ -30,8 +30,9 @@ def save_vtk(path, coords=None, vectors={}, scalars={}, Mm_per_pix=720e-3):
         pts = pts.transpose(2, 1, 0, 3)
         pts = pts.reshape((-1, 3))
 
-
-    sg = tvtk.StructuredGrid(dimensions=dim, points=pts)
+    sg = tvtk.StructuredGrid()
+    sg.points = pts
+    sg.set_dimensions(dim[0], dim[1], dim[2])
     i = 0
     for v_name, v in vectors.items():
         v = v.transpose(2, 1, 0, 3)

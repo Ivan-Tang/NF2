@@ -130,3 +130,6 @@ dmypy.json
 /results/
 /data/
 /scripts/
+
+# configs
+*.yaml
