@@ -46,6 +46,8 @@ def save_vtk(path, coords=None, vectors={}, scalars={}, Mm_per_pix=720e-3):
     for v_name, v in vectors.items():
         v = v.transpose(2, 1, 0, 3)
         v = v.reshape((-1, 3))
+        # Convert to plain numpy array to handle Astropy Quantities
+        v = np.asarray(v, dtype=np.float32)
         arr = vtk.vtkFloatArray()
         arr.SetNumberOfComponents(3)
         arr.SetName(v_name)
@@ -57,6 +59,8 @@ def save_vtk(path, coords=None, vectors={}, scalars={}, Mm_per_pix=720e-3):
     for s_name, s in scalars.items():
         s = s.transpose(2, 1, 0)
         s = s.reshape((-1))
+        # Convert to plain numpy array to handle Astropy Quantities
+        s = np.asarray(s, dtype=np.float32)
         arr = vtk.vtkFloatArray()
         arr.SetNumberOfComponents(1)
         arr.SetName(s_name)
