@@ -103,7 +103,8 @@ def run(base_path, data, work_directory=None, callbacks=[], logging={}, model={}
                       val_check_interval=val_check_interval,
                       check_val_every_n_epoch=val_every_n_epochs,
                       gradient_clip_val=0.1,
-                      callbacks=callback_modules)
+                      callbacks=callback_modules,
+                      auto_scale_batch_size=True)
 
     trainer.fit(nf2, data_module, ckpt_path='last')
     save(save_path, nf2, data_module, config_dict)
