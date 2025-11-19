@@ -107,7 +107,9 @@ def run(base_path, data, work_directory=None, callbacks=[], logging={}, model={}
                       auto_scale_batch_size=True)
 
     trainer.fit(nf2, data_module, ckpt_path='last')
+    print(f'Extrapolation finished, saving to {save_path}')
     save(save_path, nf2, data_module, config_dict)
+    print(f'Extrapolation data: {save_path} saved.')
     # clean up
     data_module.clear()
 
